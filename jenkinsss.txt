@@ -1,8 +1,10 @@
+exp5
+--------------------------------------------------------------------------------------------------
+commands
+---------
 docker volume create jenkins-data
 
-
 docker run -d --name jenkins -p 8080:8080 -p 50000:50000 -v jenkins-data:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock jenkins/jenkins:lts
-
 
 docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 
@@ -51,7 +53,273 @@ pipeline {
 }
 
 
+----------------------------------------------------------------------------------------------------
+##exp2
+----------------------------------------------------------------------------------------------------
+app.py
+------
+
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Hello from Dockerised Flask!"
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+
+requiremnts.txt
+---------------
+
+flask
+
+Dockerfile
+----------
+
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+EXPOSE 5000
+CMD ["python", "app.py"]
+
+
+###commandsss
+
+docker build -t urmila1234/flask-app:latest .
+
+docker run -d -p 5000:5000 urmila1234/flask-app:latest
+
+docker login
+docker push urmila1234/flask-app:latest
+
+--------------------------------------------------------------------------------------------------
+###exp3
+---------------------------------------------------------------------------------------------------
+#app.py
+-------
+
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+students = []
+id = 1
+
+@app.route('/students', methods=['GET'])
+def get_students():
+    return jsonify(students)
+
+@app.route('/students', methods=['POST'])
+def add_student():
+    global id
+    data = request.get_json()
+    
+    student = {
+        "id": id,
+        "name": data["name"],
+        "roll": data["roll"]
+    }
+    
+    students.append(student)
+    id += 1
+    
+    return jsonify(student)
+
+@app.route('/students/<int:sid>', methods=['DELETE'])
+def delete_student(sid):
+    global students
+    students = [s for s in students if s["id"] != sid]
+    return jsonify({"msg": "Deleted"})
+
+app.run(debug=True,host="0.0.0.0",port=5000)
+
+##commands
+pip install flask
+python app.py
+
+
+#if python is not their
+##requirement.txt
+flask 
+
+##create Dockerfile:
+--------------------
+
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+EXPOSE 5000
+CMD ["python", "app.py"]
+
+commands
+--------
+python --version
+docker build -t flaskapp:latest .
+docker run -d -p 5000:5000 flaskapp:latest
+
+# Add a student
+curl -X POST http://localhost:5000/students -H "Content-Type: application/json" -d '{"name":"Alice","roll":"CS001"}'
+
+# List all students
+curl http://localhost:5000/students
+
+curl -X POST http://localhost:5000/students \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Alice","roll":"CS001"}'
+
+##if gitbash is not their
+curl -X POST http://localhost:5000/students -H "Content-Type: application/json" -d "{\"name\":\"Alice\",\"roll\":\"CS001\"}"
+
+
+------------------------------------------------------------------------------------------
+exp(4)
+------------------------------------------------------------------------------------------
+
+.github/workflows/docker-publish.yml
+-------------------------------------
+
+##code
+
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/python-app:latest .
+
+      - name: Push to Docker Hub
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/python-app:latest
+
+
+##create repositoryyy
+git add .
+git commit -m "first"
+git push
+
+##settings
+
+#secreat variables
+##if we get any errors in the pipeline we should chage the code by giving some space
+and run git commands again
+
+
+-----------------------------------------------------------------------------------------------
+exp6
+-----------------------------------------------------------------------------------------------
+
+to  install kubectl
+--------------------
+curl.exe -LO "https://dl.k8s.io/release/v1.36.0/bin/windows/amd64/kubectl.exe"
+
+curl.exe -LO "https://dl.k8s.io/v1.36.0/bin/windows/amd64/kubectl.exe.sha256"
+
+CertUtil -hashfile kubectl.exe SHA256
+type kubectl.exe.sha256
+
+ $(Get-FileHash -Algorithm SHA256 .\kubectl.exe).Hash -eq $(Get-Content .\kubectl.exe.sha256)
+
+verify
+------
+kubectl version --client
+kubectl version --client --output=yaml
+
+to install kind
+---------------
+
+Invoke-WebRequest -Uri https://kind.sigs.k8s.io/dl/v0.31.0/kind-windows-amd64 -OutFile kind.exe
+Move-Item .\kind.exe $env:USERPROFILE\bin\kind.exe
 
 
 
+commands:::::if i get error
+--------------------------
+kind create cluster --name simple
 
+kubectl config use-context kind-simple
+
+.\kind.exe create cluster --name simple
+
+
+
+kubectl config use-context kind-simple
+-------------------------------------
+
+
+commandssss
+------------
+
+kubectl create deployment myapp --image=nginx:latest
+
+kubectl get deployments
+
+kubectl get pods
+
+kubectl scale deployment myapp --replicas=3
+
+kubectl get pods
+
+kubectl scale deployment myapp --replicas=1
+
+kubectl expose deployment myapp --port=80 --type=NodePort
+
+kubectl get services
+
+kubectl get pod
+
+kubectl describe pod <pod-name>
+
+kubectl logs <pod-name>
+
+kubectl delete deployment myapp
+
+kubectl delete service myapp
+
+
+--------------------------------
+##create a file called deployment.yaml
+---------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+
+
+commands
+---------
+kubectl apply -f deployment.yaml
+kubectl get all
