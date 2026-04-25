@@ -1,4 +1,4 @@
-exp5
+EXP5 : Configure a Jenkins pipeline to automate the building and deployment of a Dockerized application from GitHub.
 --------------------------------------------------------------------------------------------------
 commands
 ---------
@@ -54,7 +54,7 @@ pipeline {
 
 
 ----------------------------------------------------------------------------------------------------
-##exp2
+##EXP2 :Containerise a Flask application using Docker and deploy the image to Docker Hub.
 ----------------------------------------------------------------------------------------------------
 app.py
 ------
@@ -96,7 +96,7 @@ docker login
 docker push urmila1234/flask-app:latest
 
 --------------------------------------------------------------------------------------------------
-###exp3
+###EXP3 : Develop and demonstrate a simple monolithic application model using Python or Flask.
 ---------------------------------------------------------------------------------------------------
 #app.py
 -------
@@ -176,8 +176,10 @@ curl -X POST http://localhost:5000/students \
 curl -X POST http://localhost:5000/students -H "Content-Type: application/json" -d "{\"name\":\"Alice\",\"roll\":\"CS001\"}"
 
 
+
+
 ------------------------------------------------------------------------------------------
-exp(4)
+##EXP(4) : Create a CI pipeline using GitHub Actions to build and push a Docker image of a Python app to Docker Hub.
 ------------------------------------------------------------------------------------------
 
 .github/workflows/docker-publish.yml
@@ -223,8 +225,11 @@ git push
 and run git commands again
 
 
+
+
+
 -----------------------------------------------------------------------------------------------
-exp6
+##EXP6 : Use kubectl commands to create, scale, and manage Kubernetes resources like pods and deployments.
 -----------------------------------------------------------------------------------------------
 
 to  install kubectl
@@ -325,8 +330,11 @@ kubectl apply -f deployment.yaml
 kubectl get all
 
 
+
+
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
-exp 7
+##EXP(7) : Create a GitHub Actions pipeline to automatically build and push a Docker image of a Python app to Docker Hub.
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 .github/workflows/build-push.yml
